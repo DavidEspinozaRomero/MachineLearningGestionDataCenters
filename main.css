@@ -1,0 +1,106 @@
+:root {
+  /* colores de fondo */
+  --bg-primario: #050505;
+  --bg-secundario: #fafafa;
+
+  /* tipos de fuentes */
+  --text-color-primario: #000000;
+  --text-color-secundario: #fafafa;
+
+  /* tipos de fuentes */
+  --font-primario: arial, 'sans serif';
+  --font-sucundario: 'times new roman', serif;
+  --font-size: 16px;
+} 
+
+* {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-primario);
+}
+
+body {
+  font-size: var(--font-size);
+  color: var(--text-color-secundario);
+}
+
+.contenedor {
+  padding: 1%;
+  display: grid;
+  grid-template-columns: 15rem 1fr;
+  gap: 1rem;
+  grid-template-areas:  "header header"
+                        "menu main"
+                        "footer footer";
+}
+
+header {
+  border-top: 2px red solid;
+  height: 50px;
+  grid-area: header;
+  text-align: center;
+  border-top: 10px solid hsla(0, 0%, 10%);
+  border-bottom: 10px solid hsla(0, 0%, 10%);
+}
+
+menu {
+  height: 100vh;
+  width: 10rem;
+  grid-area: menu;
+  font-family: var(--font-primario);
+}
+
+main {
+  border: 2px hsla(0, 0%, 60%, 1) solid;
+  border-radius: 5px;
+  background-color: var(--bg-secundario);
+  grid-area: main;
+  padding: 10px;
+  font-family: var(--font-primario);
+}
+
+main .hora-actual {
+  border-radius: 5px;
+  width: 100px;
+  padding: 5px 10px;
+  text-align: center;
+}
+
+main .equipo {
+  display: inline-block;
+  border-radius: 10px;
+  width: 200px;
+  height: 200px;
+  text-align: center;
+  line-height: 30px;
+  margin: 10px 10px 10px 0;
+  padding: 10px;
+}
+
+main .equipo img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+main .equipo .mensaje {
+  color: red;
+}
+/* cambios */
+#number {
+  font-size:50px;
+  columns: #ffffff;
+  margin: 20px;
+}
+
+.btn-on {
+  margin: 20px;
+  color: #ffffff;
+}
+/* cambios */
+
+footer {
+  border-top: 20px solid hsla(0, 0%, 10%);
+  padding: 10px;
+  height: 50px;
+  grid-area: footer;
+}
