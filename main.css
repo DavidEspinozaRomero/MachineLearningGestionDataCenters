@@ -8,12 +8,11 @@
   --text-color-secundario: #fafafa;
 
   /* tipos de fuentes */
-  --font-primario: arial, 'sans serif';
-  --font-sucundario: 'times new roman', serif;
+  --font-primario: Arial, Helvetica, sans-serif;
+  --font-secundario: Georgia, 'Times New Roman', Times, serif;
   --font-size: 16px;
 
   /* menu */
-    font-family: Arial, Helvetica, sans-serif;
     --text-primary: #b6b6b6;
     --text-secondary: #ececec;
     --bg-primary: #23232e;
@@ -25,20 +24,21 @@
 * {
   margin: 0;
   padding: 0;
+  font-family: var(--font-primario);
+  /* font-family: var(--font-secundario); */
 }
 
 body {
   font-size: var(--font-size);
-  color: var(--text-color-secundario);
 }
 body::-webkit-scrollbar {
-  width: .25rem;
+  width: .5rem;
 }  
 body::-webkit-scrollbar-track {
-  background: #1e1e24;
+  background: var(--bg-primary);
 }
 body::-webkit-scrollbar-thumb {
-  background: #6649b8;
+  background: hsla(240, 100%, 40%, 1);
 }
 
 .contenedor {
@@ -59,6 +59,7 @@ header {
   line-height: 50px;
   /* border-top: 10px solid hsla(0, 0%, 10%);
   border-bottom: 10px solid hsla(0, 0%, 10%); */
+  color: var(--text-secondary);
   background-color: var(--bg-primario);
 }
 
@@ -114,10 +115,10 @@ menu {
 }
 
 .fa-primary {
-  color: hsla(0, 100%, 50%, 1);
+  color: hsla(0, 100%, 70%, 1);
 }
 .fa-secondary {
-  color: hsla(240, 100%, 50%, 1);
+  color: hsla(240, 100%, 70%, 1);
 }
 
 .fa-primary,
@@ -172,6 +173,7 @@ main .equipo {
   line-height: 30px;
   margin: 10px 10px 10px 0;
   padding: 10px;
+  color: var(--text-secondary);
   background-color: var(--bg-primario);
 }
 
@@ -192,7 +194,7 @@ main .equipo .mensaje {
 
 .btn-on {
   margin: 20px;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 /* cambios */
 
@@ -200,11 +202,11 @@ footer {
   /* border-top: 20px solid hsla(0, 0%, 10%); */
   padding: 10px;
   height: 50px;
+  line-height: 25px;
   grid-area: footer;
+  color: var(--text-secondary);
   background-color: var(--bg-primario);
 }
-
-
 
 /* ----------- Smaller screens firts */
 
