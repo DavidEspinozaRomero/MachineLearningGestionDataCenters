@@ -87,7 +87,8 @@ class PROGRAMA {
 
   medidorenergia() {
     // mide la energia que pasa por los cables e informa a la IA
-    return Math.random() * 0.55
+    return (Math.random()*(0.55 - 0.098) ) + 0.098
+    // ((Math.random)*(max - min + 1) ) + min)
   }
 
   cronometro() {
@@ -108,7 +109,7 @@ class PROGRAMA {
       this.TIEMPO_INICIAL = this.contadorTiempo
       console.log(`Trabajando `)
     } else {
-      console.log("Falta de energia comprobar interruptores y reiniciar equipo")
+      console.log("Falta de energia")
     }
   }
 
@@ -131,7 +132,7 @@ class PROGRAMA {
       console.log(this.informacion);
 
       //si energia < 0.1 mandar mensaje "Falta de energia"
-      if (this.informacion.e < 0.04) {
+      if (this.informacion.e < 0.1) {
         console.log("Falta de energia comprobar interruptores y reiniciar equipos");
         this.pararIntervalo(this.temporisador)
         this.pararIntervalo(this.submonitoreo)
