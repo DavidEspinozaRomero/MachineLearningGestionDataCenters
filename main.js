@@ -2,7 +2,7 @@
 // asignacion de variables y constantes
 const SEGUNDO = 1000 //milisegundos
 const MINUTO = 60 * SEGUNDO //60 000 milisegundos
-const TIEMPO_MAXIMO = 15
+// const TIEMPO_MAXIMO = 15
 let l = document.getElementById("number");
 let mensaje = document.getElementById("mensaje")
 
@@ -74,69 +74,78 @@ network.train([
 // --- INICIO del codigo base --- //
 
 class PROGRAMA {
-  constructor () {
-    this.inicializar = this.inicializar.bind(this)
-    this.inicializar()
+  constructor (idCronometro, idMensaje, TIEMPO_MAXIMO) {
+    this.iniciar = this.iniciar.bind(this)
+    this.idCronometro = idCronometro
+    this.idMensaje = idMensaje
+    this.TIEMPO_MAXIMO = TIEMPO_MAXIMO
+    this.iniciar()
   }
 
-  inicializar() {
+  iniciar() {
     // Prender maquina
     this.energia = true
-    this.trabajar()
+    // this.trabajar(this.id)
+    this.cronometro = this.cronometro.bind(this)
+    this.monitoreo = this.monitoreo.bind(this)
+    this.cronometro(this.idCronometro)
+    this.monitoreo(this.idMensaje)
   }
 
-  medidorenergia() {
+  medidorEnergia() {
     // mide la energia que pasa por los cables e informa a la IA
-    return (Math.random()*(0.55 - 0.098) ) + 0.098
+    // return (Math.random()*(0.56 - 0.04) ) + 0.04
+    return (Math.random()*(0.57 - 0.04) ) + 0.01
     // ((Math.random)*(max - min + 1) ) + min)
   }
 
-  cronometro() {
-    // cronometro para contar el tiempo de trabajo de la máquina
+  cronometro(id) {
+    // cronometro para contar el tiempo de trabajo de la máquina<
     this.contadorTiempo = 0
     this.temporisador = setInterval(() => {
-      document.getElementById('cronometro-condensador').innerHTML = this.contadorTiempo;
+      document.getElementById(id).innerHTML = this.contadorTiempo;
       // console.log(`Tiempo: ${this.contadorTiempo}`)
       this.contadorTiempo++
     }, SEGUNDO)
   }
 
-  trabajar () {
-    // si hay energia empieza a trabajar
-    if (this.energia) {
-      this.cronometro()
-      this.monitoreo()
-      this.TIEMPO_INICIAL = this.contadorTiempo
-      console.log(`Trabajando `)
-    } else {
-      console.log("Falta de energia")
-    }
-  }
+  // trabajar (id) {
+  //   // si hay energia empieza a trabajar
+  //   if (this.energia) {
+  //     this.cronometro(id)
+  //     this.monitoreo(id)
+  //     // this.TIEMPO_INICIAL = this.contadorTiempo
+  //     console.log(`Trabajando `)
+  //   } else {
+  //   }
+  // }
 
   tiempoCorrecto () {
-    return ((this.contadorTiempo / 60) / (TIEMPO_MAXIMO * 2))
+    return ((this.contadorTiempo / 60) / (this.TIEMPO_MAXIMO * 2))
   }
 
-  monitoreo() {
-    // monitorea el tiempo de trabajo, para que no se exceda
+  monitoreo(id) {
+    // monitorea el tiempo de trabajo, y la energia para que no se exceda
     this.submonitoreo = setInterval(() => {
+
+      //-- test 
+      // document.getElementById(id).innerHTML = `falla dar mantenimiento`
+
+      //-- test
 
       // --- ML ---
       // crear un objeto con {e: 0-1, t: 0-1}; e = electricidad t = tiempo
       // La electricidad varia cada segundo, pudiendo no a ver energia (< 0), energia (0 - 0.5) o una sobre carga (> 0.5)
       // tiempo = tiempoTrabajo / tiempoMaximo * 2
       this.informacion = {
-        e: this.medidorenergia(),
+        e: this.medidorEnergia(),
         t: this.tiempoCorrecto(),
       }
       console.log(this.informacion);
 
       //si energia < 0.1 mandar mensaje "Falta de energia"
-      if (this.informacion.e < 0.1) {
-        console.log("Falta de energia comprobar interruptores y reiniciar equipos");
-        this.pararIntervalo(this.temporisador)
-        this.pararIntervalo(this.submonitoreo)
-      } else {
+
+
         // Se entrega la informacion a la IA para que decida
         this.decision = network.run(this.informacion)
         console.log(this.decision);
@@ -146,23 +155,31 @@ class PROGRAMA {
           //Manda mensaje a la empresa para mantenimiento
           //mostrar que parte fallo
           console.log(`falla dar mantenimiento`)
-          document.getElementById('mensaje-condensador').innerHTML = `falla dar mantenimiento`
+          document.getElementById(id).innerHTML = `falla`
+          // document.getElementById(id).innerHTML = `falla dar mantenimiento`
+          if (this.informacion.e < 0.1) {
+            console.log("Falta de energia comprobar interruptores y reiniciar equipos");
+          } else if (this.informacion.e > 0.5) {
+            console.log("sobrecarga de energia");
+          } else {
+            if (this.informacion.t > 0.5) {
+              //mensaje de exceso de trabajo
+            }
+          }
 
-          // para el temporizador y el monitoreo
+          // para el cronometro y el monitoreo
           this.pararIntervalo(this.temporisador)
           this.pararIntervalo(this.submonitoreo)
 
           // apaga la luz para prevenir daños
-          this.energia = false
+          // this.energia = false
           // verifica si hay luz, manda a descanzar
-          this.trabajar()
+          // this.trabajar()
         } else {
           //todo bien sigo monitoreando
-          console.log(`todo bien`)
-          document.getElementById('mensaje-condensador').innerHTML = `todo bien`
+          // console.log(`todo bien`)
+          document.getElementById(id).innerHTML = `todo bien`
         }
-
-      }
 
     }, SEGUNDO * 1)
     // --- ML ---
@@ -171,8 +188,8 @@ class PROGRAMA {
   pararIntervalo(idInterval) {
     clearInterval(idInterval)
   }
-}
+} 
 
-function empezarPrograma() {
-  window.programa = new PROGRAMA
+function empezarPrograma(id1, id2, Tiempo_Maximo) {
+  window.programa = new PROGRAMA(id1, id2, Tiempo_Maximo)
 }
