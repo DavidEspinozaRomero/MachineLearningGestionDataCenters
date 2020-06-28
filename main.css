@@ -44,12 +44,6 @@ body::-webkit-scrollbar-thumb {
 .contenedor {
   background-color: var(--bg-primario);
   padding: 1%;
-  display: grid;
-  grid-template-columns: 10rem 1fr;
-  gap: 1rem;
-  grid-template-areas:  "header header"
-                        "menu main"
-                        "footer footer";
 }
 
 header {
@@ -167,8 +161,9 @@ main .hora-actual {
 main .equipo {
   display: inline-block;
   border-radius: 10px;
-  width: 200px;
-  height: 200px;
+  width: 40%;
+  max-width: 200px;
+  height: auto;
   text-align: center;
   line-height: 30px;
   margin: 10px 10px 10px 0;
@@ -178,8 +173,8 @@ main .equipo {
 }
 
 main .equipo img {
-  width: 100px;
-  height: 100px;
+  width: 50%;
+  height: 50%;
   border-radius: 50%;
 }
 main .equipo .mensaje {
@@ -196,6 +191,11 @@ main .equipo .mensaje {
   margin: 20px;
   color: var(--text-primary);
 }
+
+#instrucciones {
+  color: var(--text-primary);
+  grid-area: intrucciones;
+}
 /* cambios */
 
 footer {
@@ -210,7 +210,16 @@ footer {
 
 /* ----------- Smaller screens firts */
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 1023px) {
+
+  .contenedor {
+    display: block;
+  }
+
+  header {
+    font-size: 0.7rem;
+  }
+
   .navbar {
     bottom: 0;
     width: 100vw;
@@ -233,7 +242,16 @@ footer {
 
 /* ------------ Larger screens */
 
-@media screen and (min-width: 601px) {
+@media screen and (min-width: 1024px) {
+
+  .contenedor {
+    display: grid;
+    grid-template-columns: 10rem 1fr 15rem;
+    gap: 1rem;
+    grid-template-areas:  "header header header"
+                          "menu main intrucciones"
+                          "footer footer footer";
+  }
   
   .navbar {
     top: 0;
