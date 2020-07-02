@@ -5,6 +5,10 @@ const MINUTO = 60 * SEGUNDO //60 000 milisegundos
 
 let tiempoCompresor = 0
 let tiempoVentilador = 0
+const imgVE = document.getElementById("img-ventilador-evaporador")
+const imgVC = document.getElementById("img-ventilador-condensador")
+const imgCM = document.getElementById("img-compresor")
+const imgCN = document.getElementById("img-condensador")
 
 // Visualizar la hora actual
 var myVar = setInterval(myTimer, SEGUNDO);
@@ -70,12 +74,14 @@ network.train([
 // --- INICIO del codigo  --- //
 
 class PROGRAMA {
-  constructor (idCronometro, idMensaje, TIEMPO_MAXIMO, equipo) {
+  constructor (idCronometro, idMensaje, TIEMPO_MAXIMO, equipo, idata, idImg) {
     this.iniciar = this.iniciar.bind(this)
     this.idCronometro = idCronometro
     this.idMensaje = idMensaje
     this.TIEMPO_MAXIMO = TIEMPO_MAXIMO
     this.equipo = equipo
+    this.data = idata
+    this.idImg = idImg
     this.contadorTiempo = 0
     this.tiempototal = 0
     this.iniciar()
@@ -117,7 +123,7 @@ class PROGRAMA {
       document.getElementById(id).innerHTML = Math.floor(this.contadorTiempo / 1);
       // console.log(`Tiempo: ${this.contadorTiempo}`)
       this.contadorTiempo++
-    }, SEGUNDO / 100)
+    }, SEGUNDO / 1)
   }
 
   extraerTiempo (id) {
@@ -145,15 +151,15 @@ class PROGRAMA {
     // Dependiendo la falla realiza una accion diferente
     if (this.informacion.e < 0.05) {
       // Falta de energia Comprobar interruptores y reiniciar equipos
-      console.log("Falta de energia Comprobar interruptores y reiniciar equipos");
+      // console.log("Falta de energia Comprobar interruptores y reiniciar equipos");
       setTimeout(this.iniciar, SEGUNDO * 10)
     } else if (this.informacion.e > 0.59) {
-      console.log("sobrecarga de energia");
+      // console.log("sobrecarga de energia");
       // solo reiniciar si ya se dio mantenimiento
       // setTimeout(this.iniciar, SEGUNDO * 10)
     } else {
       if (this.informacion.t > 0.5) {
-        console.log("Tiempo limite");
+        // console.log("Tiempo limite");
         // mensaje de exceso de trabajo
         setTimeout(this.iniciar, SEGUNDO * 10)
       }
@@ -166,9 +172,27 @@ class PROGRAMA {
     return ((this.contadorTiempo / 60) / (this.TIEMPO_MAXIMO * 2))
   }
 
+  iluminar() {
+    this.img = document.getElementById(this.idImg)
+    console.log(this.img);
+    
+    if (this.img.classList.contains("dark")) {
+      this.img.classList.remove("dark")
+    } else {
+      this.img.classList.add("dark")
+    }
+  }
+
+  dataequipos() {
+    document.getElementById(this.data).innerHTML = (`Electricidad: ${this.informacion.e} <br> Tiempo: ${this.informacion.t} <br> ON: ${this.decision.on.toFixed(3)} / OFF: ${this.decision.off.toFixed(3)}`)
+  }
+
+
   monitoreo(id) {
     // monitorea el tiempo de trabajo y la energia, para que no se exceda
+    this.iluminar()
     this.submonitoreo = setInterval(() => {
+
       // --- ML ---
       // crear un objeto con {e: 0-1, t: 0-1}
       // e = electricidad ; t = tiempo
@@ -178,15 +202,17 @@ class PROGRAMA {
         e: this.medidorEnergia(id).toFixed(3),
         t: this.tiempoCorrecto(id).toFixed(3),
       }
-      console.log(this.informacion);
+      // console.log(this.informacion);
 
         // Se entrega la informacion a la IA para que decida
         this.decision = network.run(this.informacion)
-        console.log(this.decision);
+        // console.log(this.decision);
+        this.dataequipos()
 
         // if on > off serguir trabajando // else apagar
         if (this.decision.on < this.decision.off) {
           // Manda mensaje a la empresa para mantenimiento
+          this.iluminar()
           document.getElementById(id).innerHTML = `falla`
           // document.getElementById(id).innerHTML = `falla dar mantenimiento`
           this.mensajesAlerta(this.equipo)
@@ -221,7 +247,7 @@ class PROGRAMA {
         // console.log(tiempoCompresor + " " + tiempoVentilador);
         // console.log(this.tiempototal + " " + this.contadorTiempo);
 
-    }, SEGUNDO / 100)
+    }, SEGUNDO / 1)
     // --- ML ---
   }
 
@@ -230,9 +256,22 @@ class PROGRAMA {
   }
 }
 
-function empezarPrograma(id1, id2, Tiempo_Maximo, equipo) {
-  window.programa = new PROGRAMA(id1, id2, Tiempo_Maximo, equipo)
+function empezarPrograma(id1, id2, Tiempo_Maximo, equipo, idata, idImg) {
+  window.programa = new PROGRAMA(id1, id2, Tiempo_Maximo, equipo, idata, idImg)
 }
+
+function play () {
+  const audio = new Audio ('../audio/horse.ogv')
+  audio.play()
+} play ()
+
+// function iluminar() {
+//   if (imagenEquipo.classlist.contains("light")) {
+//     imagenEquipo.classlist.remove("light")
+//   } else {
+//     imagenEquipo.classlist.add("light")
+//   }
+// }
 
 // let probabilidad = () => {return Math.random() > 0.01}
 // for (let i = 0; i < 1000; i++) {

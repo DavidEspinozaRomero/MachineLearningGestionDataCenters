@@ -1,0 +1,134 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('fonts/icomoon.eot?p314ll');
+  src:  url('fonts/icomoon.eot?p314ll#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?p314ll') format('truetype'),
+    url('fonts/icomoon.woff?p314ll') format('woff'),
+    url('fonts/icomoon.svg?p314ll#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-git:before {
+  content: "\e90f";
+  color: #f05032;
+}
+.icon-whatsapp:before {
+  content: "\e900";
+  color: #25d366;
+}
+.icon-linkedin:before {
+  content: "\e906";
+  color: #0077b5;
+}
+.icon-facebook:before {
+  content: "\e907";
+  color: #1877f2;
+}
+.icon-github:before {
+  content: "\e908";
+}
+.icon-javascript:before {
+  content: "\e909";
+  color: #f7df1e;
+}
+.icon-css3:before {
+  content: "\e90c";
+  color: #1572b6;
+}
+.icon-html5:before {
+  content: "\e90d";
+  color: #e34f26;
+}
+.icon-gmail:before {
+  content: "\e90e";
+  color: #d14836;
+}
+.icon-star-half:before {
+  content: "\e901";
+}
+.icon-rate:before {
+  content: "\e901";
+}
+.icon-star:before {
+  content: "\e901";
+}
+.icon-star-full:before {
+  content: "\e902";
+}
+.icon-rate1:before {
+  content: "\e902";
+}
+.icon-star1:before {
+  content: "\e902";
+}
+.icon-favorite:before {
+  content: "\e902";
+}
+.icon-bookmark:before {
+  content: "\e902";
+}
+.icon-star-empty:before {
+  content: "\e903";
+}
+.icon-rate2:before {
+  content: "\e903";
+}
+.icon-star2:before {
+  content: "\e903";
+}
+.icon-favorite1:before {
+  content: "\e903";
+}
+.icon-bookmark1:before {
+  content: "\e903";
+}
+.icon-location:before {
+  content: "\e904";
+}
+.icon-map-marker:before {
+  content: "\e904";
+}
+.icon-pin:before {
+  content: "\e904";
+}
+.icon-home:before {
+  content: "\e905";
+}
+.icon-house:before {
+  content: "\e905";
+}
+.icon-menu:before {
+  content: "\e90a";
+}
+.icon-options:before {
+  content: "\e90a";
+}
+.icon-hamburger:before {
+  content: "\e90a";
+}
+.icon-menu1:before {
+  content: "\e90b";
+}
+.icon-options1:before {
+  content: "\e90b";
+}
+.icon-hamburger1:before {
+  content: "\e90b";
+}
