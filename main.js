@@ -267,7 +267,7 @@ function empezarPrograma(id1, id2, Tiempo_Maximo, equipo, idata, idImg, srcAudio
 }
 
 function bienvenida () {
-  const audio = new Audio ('../audio/bienvenida')
+  const audio = new Audio ('../audio/bienvenida.mp3')
   audio.play()
 } bienvenida()
 
