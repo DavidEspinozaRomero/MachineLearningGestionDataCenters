@@ -10,6 +10,7 @@ const imgVC = document.getElementById("img-ventilador-condensador")
 const imgCM = document.getElementById("img-compresor")
 const imgCN = document.getElementById("img-condensador")
 
+
 // Visualizar la hora actual
 var myVar = setInterval(myTimer, SEGUNDO);
 
@@ -74,7 +75,7 @@ network.train([
 // --- INICIO del codigo  --- //
 
 class PROGRAMA {
-  constructor (idCronometro, idMensaje, TIEMPO_MAXIMO, equipo, idata, idImg) {
+  constructor (idCronometro, idMensaje, TIEMPO_MAXIMO, equipo, idata, idImg, srcAudio) {
     this.iniciar = this.iniciar.bind(this)
     this.idCronometro = idCronometro
     this.idMensaje = idMensaje
@@ -82,9 +83,11 @@ class PROGRAMA {
     this.equipo = equipo
     this.data = idata
     this.idImg = idImg
+    this.srcAudio = srcAudio
     this.contadorTiempo = 0
     this.tiempototal = 0
     this.iniciar()
+    this.playAudio()
   }
 
   iniciar() {
@@ -97,6 +100,11 @@ class PROGRAMA {
     this.cronometro(this.idCronometro)
     this.monitoreo(this.idMensaje, this.equipo)
     // this.comparacionTiempos()
+  }
+
+  playAudio() {
+    this.audio = new Audio (this.srcAudio)
+    this.audio.play()
   }
 
   medidorEnergia(id) {
@@ -174,8 +182,6 @@ class PROGRAMA {
 
   iluminar() {
     this.img = document.getElementById(this.idImg)
-    console.log(this.img);
-    
     if (this.img.classList.contains("dark")) {
       this.img.classList.remove("dark")
     } else {
@@ -256,14 +262,14 @@ class PROGRAMA {
   }
 }
 
-function empezarPrograma(id1, id2, Tiempo_Maximo, equipo, idata, idImg) {
-  window.programa = new PROGRAMA(id1, id2, Tiempo_Maximo, equipo, idata, idImg)
+function empezarPrograma(id1, id2, Tiempo_Maximo, equipo, idata, idImg, srcAudio) {
+  window.programa = new PROGRAMA(id1, id2, Tiempo_Maximo, equipo, idata, idImg, srcAudio)
 }
 
-function play () {
-  const audio = new Audio ('../audio/horse.ogv')
+function bienvenida () {
+  const audio = new Audio ('../audio/bienvenida')
   audio.play()
-} play ()
+} bienvenida()
 
 // function iluminar() {
 //   if (imagenEquipo.classlist.contains("light")) {

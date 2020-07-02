@@ -175,8 +175,7 @@ main .equipo {
   padding: 10px;
   color: var(--text-secondary);
   background-color: var(--bg-primario);
-  transition: transform var(--transition-speed);
-}
+  }
 
 main .equipo img {
   width: 50%;
@@ -186,7 +185,6 @@ main .equipo img {
 }
 .dark {
   filter: grayscale(50%) opacity(.5);
-  transition: transform var(--transition-speed);
 }
 
 main .equipo .mensaje {
