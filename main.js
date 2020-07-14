@@ -5,10 +5,18 @@ const MINUTO = 60 * SEGUNDO //60 000 milisegundos
 
 let tiempoCompresor = 0
 let tiempoVentilador = 0
-const imgVE = document.getElementById("img-ventilador-evaporador")
-const imgVC = document.getElementById("img-ventilador-condensador")
-const imgCM = document.getElementById("img-compresor")
-const imgCN = document.getElementById("img-condensador")
+// const imgVE = document.getElementById("img-ventilador-evaporador")
+// const imgVC = document.getElementById("img-ventilador-condensador")
+// const imgCM = document.getElementById("img-compresor")
+// const imgCN = document.getElementById("img-condensador")
+// -- AUDIO -- //
+const activado = new Audio ('../audio/activado.mp3')
+const controlar = new Audio ('../audio/controlar.mp3')
+const monitoreando = new Audio ('../audio/monitoreando.mp3')
+const supervisar = new Audio ('../audio/supervisar.mp3')
+const vigilar = new Audio ('../audio/vigilar.mp3')
+const falla = new Audio ('../audio/falla.mp3')
+
 
 
 // Visualizar la hora actual
@@ -72,6 +80,8 @@ network.train([
 
 // --- Machine Learning END --- //
 
+swal("Bienvenido!!", "Al Asistente de Mantenimiento", "success")
+
 // --- INICIO del codigo  --- //
 
 class PROGRAMA {
@@ -86,8 +96,8 @@ class PROGRAMA {
     this.srcAudio = srcAudio
     this.contadorTiempo = 0
     this.tiempototal = 0
-    this.iniciar()
     this.playAudio()
+    this.iniciar()
   }
 
   iniciar() {
@@ -103,8 +113,9 @@ class PROGRAMA {
   }
 
   playAudio() {
-    this.audio = new Audio (this.srcAudio)
-    this.audio.play()
+    
+    // this.audio = new Audio (this.srcAudio)
+    // this.audio.play()
   }
 
   medidorEnergia(id) {
@@ -131,7 +142,7 @@ class PROGRAMA {
       document.getElementById(id).innerHTML = Math.floor(this.contadorTiempo / 1);
       // console.log(`Tiempo: ${this.contadorTiempo}`)
       this.contadorTiempo++
-    }, SEGUNDO / 1)
+    }, SEGUNDO / 100)
   }
 
   extraerTiempo (id) {
@@ -154,6 +165,7 @@ class PROGRAMA {
 
   mensajesAlerta(equipo) {
     // mostrar que parte fallo
+    falla.play()
     console.log(`falla en ${equipo} dar mantenimiento`)
 
     // Dependiendo la falla realiza una accion diferente
@@ -219,7 +231,7 @@ class PROGRAMA {
         if (this.decision.on < this.decision.off) {
           // Manda mensaje a la empresa para mantenimiento
           this.iluminar()
-          document.getElementById(id).innerHTML = `falla`
+          document.getElementById(id).innerHTML = `FALLA`
           // document.getElementById(id).innerHTML = `falla dar mantenimiento`
           this.mensajesAlerta(this.equipo)
           
@@ -244,7 +256,7 @@ class PROGRAMA {
         } else {
           //todo bien sigo monitoreando
           // console.log(`todo bien`)
-          document.getElementById(id).innerHTML = `todo bien`
+          document.getElementById(id).innerHTML = `Trabajando`
           if (id == "mensaje-ventilador-evaporador") {
             tiempoVentilador = this.contadorTiempo
           }
@@ -253,7 +265,7 @@ class PROGRAMA {
         // console.log(tiempoCompresor + " " + tiempoVentilador);
         // console.log(this.tiempototal + " " + this.contadorTiempo);
 
-    }, SEGUNDO / 1)
+    }, SEGUNDO / 100)
     // --- ML ---
   }
 
@@ -267,7 +279,7 @@ function empezarPrograma(id1, id2, Tiempo_Maximo, equipo, idata, idImg, srcAudio
 }
 
 function bienvenida () {
-  const audio = new Audio ('../audio/bienvenida.mp3')
+  const audio = new Audio ('./audio/bienvenida.mp3')
   audio.play()
 } bienvenida()
 

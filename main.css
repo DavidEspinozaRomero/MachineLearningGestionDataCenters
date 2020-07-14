@@ -175,6 +175,7 @@ main .equipo {
   padding: 10px;
   color: var(--text-secondary);
   background-color: var(--bg-primario);
+  box-shadow: 5px 5px hsla(240, 100%, 40%, .8);
   }
 
 main .equipo img {
@@ -188,7 +189,7 @@ main .equipo img {
 }
 
 main .equipo .mensaje {
-  color: red;
+  color: hsla(0, 100%, 70%, 1);
 }
 .datos {
   /* transition: var(--transition-speed); */
