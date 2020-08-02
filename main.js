@@ -9,13 +9,10 @@ let tiempoVentilador = 0
 // const imgVC = document.getElementById("img-ventilador-condensador")
 // const imgCM = document.getElementById("img-compresor")
 // const imgCN = document.getElementById("img-condensador")
+
 // -- AUDIO -- //
-const activado = new Audio ('../audio/activado.mp3')
-const controlar = new Audio ('../audio/controlar.mp3')
-const monitoreando = new Audio ('../audio/monitoreando.mp3')
-const supervisar = new Audio ('../audio/supervisar.mp3')
-const vigilar = new Audio ('../audio/vigilar.mp3')
 const falla = new Audio ('../audio/falla.mp3')
+const alerta = new Audio ('../audio/alerta.mp3')
 
 
 
@@ -85,7 +82,7 @@ swal("Bienvenido!!", "Al Asistente de Mantenimiento", "success")
 // --- INICIO del codigo  --- //
 
 class PROGRAMA {
-  constructor (idCronometro, idMensaje, TIEMPO_MAXIMO, equipo, idata, idImg, srcAudio) {
+  constructor (idCronometro, idMensaje, TIEMPO_MAXIMO, equipo, idata, idImg, srcAudio, CORRIENTE_MAXIMA, CORRIENTE_MINIMA, Tiempo_Descanso) {
     this.iniciar = this.iniciar.bind(this)
     this.idCronometro = idCronometro
     this.idMensaje = idMensaje
@@ -94,6 +91,9 @@ class PROGRAMA {
     this.data = idata
     this.idImg = idImg
     this.srcAudio = srcAudio
+    this.CORRIENTE_MAXIMA = CORRIENTE_MAXIMA
+    this.CORRIENTE_MINIMA = CORRIENTE_MINIMA
+    this.Tiempo_Descanso = Tiempo_Descanso
     this.contadorTiempo = 0
     this.tiempototal = 0
     this.playAudio()
@@ -113,88 +113,149 @@ class PROGRAMA {
   }
 
   playAudio() {
-    
-    // this.audio = new Audio (this.srcAudio)
-    // this.audio.play()
+    this.audio = new Audio (this.srcAudio)
+    this.audio.play()
   }
 
-  medidorEnergia(id) {
-    // mide la energia que pasa por los cables e informa a la IA
-    if (id == "mensaje-ventilador-evaporador") return ((Math.random()*(0.5 - 0.1) ) + 0.1)
-
+  corrienteRandom(id) {
+    // mide la corriente que pasa por los cables e informa a la IA
+    
+    if (id == "mensaje-ventilador-evaporador") return ( (Math.random()*(this.CORRIENTE_MAXIMA - this.CORRIENTE_MINIMA) ) + this.CORRIENTE_MINIMA)
+    
+    //probabilidad de que la corriente no sea la adecuada
     this.probabilidad = () => {return Math.random() > 0.9999 }
     if (this.probabilidad()) {
-      this.energia = () => {return Math.random() < 0.95}
-      if (this.energia()) return ((Math.random()*(0.048 - 0.001) ) + 0.001)
-      else return ((Math.random()*(1 - 0.55) ) + 0.55)
-    } else {
-      // Genera un numero aleatorio entre 0.06 a 0.45
-      return ((Math.random()*(0.5 - 0.1) ) + 0.1)
-      // ((Math.random()*(max - min + 1) ) + min)
-    }
-
+      alerta.play() // Audio de Alerta revizar el equipo
+      // Corriente puede dar una Sobrecarga / Insuficiencia
+      this.energia = () => {return Math.random() > 0.95}
+      // Genera un numero aleatorio entre 0 a 9 -Insuficiente-
+      if (this.energia()) return (Math.random()* (this.CORRIENTE_MINIMA * 0.9 ))
+      // Genera un numero aleatorio entre 15 a 30 -Sobrecarga-
+        else return ( (Math.random()*(this.CORRIENTE_MAXIMA * 2 ) ) + (this.CORRIENTE_MAXIMA * 1.1)) 
+      } else {
+        // Genera un numero aleatorio entre 10 a 15 -Normal-
+        return ( (Math.random()*(this.CORRIENTE_MAXIMA - this.CORRIENTE_MINIMA) ) + this.CORRIENTE_MINIMA)
+        // ((Math.random()*(max - min + 1) ) + min)
+      }
+  
   }
+
+  corrienteF1() {
+    this.F1 = this.corrienteRandom(this.idMensaje).toFixed(1)
+    console.log(`F1: ${this.F1} `);
+    
+    document.getElementById(this.idCronometro).innerHTML += (`F1:${this.F1} (A) <br/>`);
+    return parseFloat(this.F1)
+  }
+  corrienteF2() {
+    this.F2 = this.corrienteRandom(this.idMensaje).toFixed(1)
+    document.getElementById(this.idCronometro).innerHTML += (`F2:${this.F2} (A) <br/>`);
+    
+    return parseFloat(this.F2)
+  }
+  corrienteF3() {
+    this.F3 = this.corrienteRandom(this.idMensaje).toFixed(1)
+    document.getElementById(this.idCronometro).innerHTML += (`F3:${this.F3} (A)`);
+    
+    return parseFloat(this.F3)
+  }
+
+  medidorEnergia() {
+    this.trifasico = ((this.corrienteF1() + this.corrienteF2() + this.corrienteF3() ) / 3) / (this.CORRIENTE_MAXIMA * 2);
+    console.log(`suma: ${this.trifasico} `);
+    // console.log(`trifasico: ${this.trifasico} `);
+    
+    return this.trifasico; 
+    // this.media = (this.corrienteF1() + this.corrienteF2())/2
+  }
+
+  // medidorEnergia(id) {
+  //   // mide la corriente que pasa por los cables e informa a la IA
+  //   if (id == "mensaje-ventilador-evaporador") return ((Math.random()*(0.5 - 0.1) ) + 0.1)
+
+  //   //probabilidad de que la corriente no sea la adecuada
+  //   this.probabilidad = () => {return Math.random() > 0.999 }
+  //   if (this.probabilidad()) {
+  //     // Corriente puede dar una Sobrecarga / Insuficiencia
+  //     this.energia = () => {return Math.random() < 0.95}
+  //     // Genera un numero aleatorio entre 0.048 a 0.001 -Insufuciente-
+  //     if (this.energia()) return ((Math.random()*(0.048 - 0.001) ) + 0.001)
+  //     // Genera un numero aleatorio entre 1 a 0.55 -Sobrecarga-
+  //     else return ((Math.random()*(1 - 0.55) ) + 0.55)
+  //   } else {
+  //     // Genera un numero aleatorio entre 0.5 a 0.1 -Normal-
+  //     return ((Math.random()*(0.5 - 0.1) ) + 0.1)
+  //     // ((Math.random()*(max - min + 1) ) + min)
+  //   }
+  // }
 
   cronometro(id) {
     // cronometro para contar el tiempo de trabajo de la máquina
     this.contadorTiempo = 0
     this.temporisador = setInterval(() => {
-      document.getElementById(id).innerHTML = Math.floor(this.contadorTiempo / 1);
+      this.segHoras = (this.contadorTiempo/360).toFixed(2)
+      // document.getElementById(id).innerHTML += (`<br/>${this.segHoras}h`);
+      document.getElementById(id).innerHTML = (`${this.segHoras}h <br/>`);
       // console.log(`Tiempo: ${this.contadorTiempo}`)
       this.contadorTiempo++
-    }, SEGUNDO / 100)
+    }, SEGUNDO / 1)
   }
 
-  extraerTiempo (id) {
-    // --- Tiempo trabajado de los diferentes equipos ---
-    if (id == "mensaje-ventilador-evaporador") {
-      tiempoVentilador = this.contadorTiempo
-    }
-    if (id == "mensaje-compresor") {
-      tiempoCompresor += this.contadorTiempo
-    }
+  // extraerTiempo (id) {
+  //   // --- Tiempo trabajado de los diferentes equipos ---
+  //   if (id == "mensaje-ventilador-evaporador") {
+  //     tiempoVentilador = this.contadorTiempo
+  //   }
+  //   if (id == "mensaje-compresor") {
+  //     tiempoCompresor += this.contadorTiempo
+  //   }
 
+  // }
+
+  relacionTiempos() { 
+    // Da en porcentaje la diferencia de tiempo de trabajo del condensador con el ventilador evaporador
+    this.relacion = ((tiempoCompresor * 100) / tiempoVentilador).toFixed(1)
+      document.getElementById("relacion").innerHTML = (`<br/>TVent:${(tiempoVentilador/360).toFixed(1)}h TCom:${(tiempoCompresor/360).toFixed(1)}h <br/> Relacion:${this.relacion}%`);
   }
 
-  comparacionTiempos() { 
-    // saca en porcentaje la diferencia de tiempo del condensador con el ventilador evaporador
-    // setInterval(() => {
-      return ((tiempoCompresor * 100) / tiempoVentilador).toFixed(1)
-    // }, SEGUNDO * 60);
-  }
-
-  mensajesAlerta(equipo) {
+  mensajesAlerta(equipo, id) {
     // mostrar que parte fallo
-    falla.play()
     console.log(`falla en ${equipo} dar mantenimiento`)
-
+    
     // Dependiendo la falla realiza una accion diferente
     if (this.informacion.e < 0.05) {
+      falla.play()
+      document.getElementById(id).innerHTML = `Falla de energia`
       // Falta de energia Comprobar interruptores y reiniciar equipos
       // console.log("Falta de energia Comprobar interruptores y reiniciar equipos");
-      setTimeout(this.iniciar, SEGUNDO * 10)
+      setTimeout(this.iniciar, MINUTO * 1)
     } else if (this.informacion.e > 0.59) {
+      falla.play()
+      document.getElementById(id).innerHTML = `Sobrecarga`
       // console.log("sobrecarga de energia");
       // solo reiniciar si ya se dio mantenimiento
       // setTimeout(this.iniciar, SEGUNDO * 10)
     } else {
       if (this.informacion.t > 0.5) {
+        document.getElementById(id).innerHTML = `IA: Autoproteccion`
         // console.log("Tiempo limite");
         // mensaje de exceso de trabajo
-        setTimeout(this.iniciar, SEGUNDO * 10)
+        setTimeout(this.iniciar, MINUTO * this.Tiempo_Descanso)
       }
     }
   }
 
   tiempoCorrecto (id) {
     // transforma el tiempo de 0.0 a 1.0 para que la maquina entienda // tiempoTrabajado / tiempoMaximo * 2
-    if (id == "mensaje-ventilador-evaporador") return 0.3
+    // if (id == "mensaje-ventilador-evaporador") return 0.3
     return ((this.contadorTiempo / 60) / (this.TIEMPO_MAXIMO * 2))
   }
 
   iluminar() {
+    //ilumina el equipo que esta trabajando
     this.img = document.getElementById(this.idImg)
     if (this.img.classList.contains("dark")) {
+      //Quita la iluminacion si esta Descanzando
       this.img.classList.remove("dark")
     } else {
       this.img.classList.add("dark")
@@ -202,7 +263,8 @@ class PROGRAMA {
   }
 
   dataequipos() {
-    document.getElementById(this.data).innerHTML = (`Electricidad: ${this.informacion.e} <br> Tiempo: ${this.informacion.t} <br> ON: ${this.decision.on.toFixed(3)} / OFF: ${this.decision.off.toFixed(3)}`)
+    // Muestra las informacion que recibe la IA y la desicion que toma
+    document.getElementById(this.data).innerHTML = (`Tiempo: ${this.informacion.t} <br> Electricidad: ${this.informacion.e} <br> ON: ${this.decision.on.toFixed(3)} / OFF: ${this.decision.off.toFixed(3)}`)
   }
 
 
@@ -217,7 +279,7 @@ class PROGRAMA {
       // La electricidad varia cada segundo, pudiendo no a ver energia (< 0), energia (0 - 0.5) o una sobre carga (> 0.5)
 
       this.informacion = {
-        e: this.medidorEnergia(id).toFixed(3),
+        e: this.medidorEnergia().toFixed(3),
         t: this.tiempoCorrecto(id).toFixed(3),
       }
       // console.log(this.informacion);
@@ -231,15 +293,12 @@ class PROGRAMA {
         if (this.decision.on < this.decision.off) {
           // Manda mensaje a la empresa para mantenimiento
           this.iluminar()
-          document.getElementById(id).innerHTML = `FALLA`
-          // document.getElementById(id).innerHTML = `falla dar mantenimiento`
-          this.mensajesAlerta(this.equipo)
+          // document.getElementById(id).innerHTML = `FALLA`
+          this.mensajesAlerta(this.equipo, id)
           
           // Agrega el tiempo trabajado 
           if (id == "mensaje-compresor") {
             tiempoCompresor += this.contadorTiempo
-            this.porcentaje = this.comparacionTiempos()
-            console.log(this.porcentaje);
           }
           // Detiene el cronometro y el monitoreo 
           this.pararIntervalo(this.temporisador)
@@ -265,7 +324,7 @@ class PROGRAMA {
         // console.log(tiempoCompresor + " " + tiempoVentilador);
         // console.log(this.tiempototal + " " + this.contadorTiempo);
 
-    }, SEGUNDO / 100)
+    }, SEGUNDO / 1)
     // --- ML ---
   }
 
@@ -274,8 +333,8 @@ class PROGRAMA {
   }
 }
 
-function empezarPrograma(id1, id2, Tiempo_Maximo, equipo, idata, idImg, srcAudio) {
-  window.programa = new PROGRAMA(id1, id2, Tiempo_Maximo, equipo, idata, idImg, srcAudio)
+function empezarPrograma(id1, id2, Tiempo_Maximo, equipo, idata, idImg, srcAudio, CORRIENTE_MAXIMA, CORRIENTE_MINIMA, Tiempo_Descanso) {
+  window.programa = new PROGRAMA(id1, id2, Tiempo_Maximo, equipo, idata, idImg, srcAudio, CORRIENTE_MAXIMA, CORRIENTE_MINIMA, Tiempo_Descanso)
 }
 
 function bienvenida () {
