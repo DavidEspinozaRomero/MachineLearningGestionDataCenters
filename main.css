@@ -1,7 +1,7 @@
 :root {
   /* colores de fondo */
   --bg-primario: #050505;
-  --bg-secundario: #fcfcfc;
+  --bg-secundario: hsla(0, 0%, 95%, 1);
 
   /* tipos de fuentes */
   --text-color-primario: #000000;
@@ -192,10 +192,17 @@ main .equipo {
   padding: 10px;
   color: var(--text-secondary);
   background-color: var(--bg-primario);
-  box-shadow: 5px 5px hsla(240, 100%, 40%, .8);
-  }
+  box-shadow: 3px 3px hsla(240, 100%, 40%, .8);
+  /* box-shadow: 5px 5px hsla(0, 0%, 70%, 1); */
+}
 
+main .equipo p {
+  /* background-color: hsla(0, 0%, 15%, 1); */
+  box-shadow: 1px 1px hsla(0, 0%, 20%, 1);
+  border-radius: 5px;
+}
 main .equipo img {
+  margin-top: 5px;
   background-color: hsl(0 0% 40% / 1);
   max-width: auto;
   max-height: 200px;

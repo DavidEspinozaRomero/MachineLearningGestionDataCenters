@@ -125,15 +125,16 @@ class PROGRAMA {
     //probabilidad de que la corriente no sea la adecuada
     this.probabilidad = () => {return Math.random() > 0.9999 }
     if (this.probabilidad()) {
+      console.log(`falla en ${this.equipo}`) // mensaje de error en el quipo
       alerta.play() // Audio de Alerta revizar el equipo
       // Corriente puede dar una Sobrecarga / Insuficiencia
-      this.energia = () => {return Math.random() > 0.95}
-      // Genera un numero aleatorio entre 0 a 9 -Insuficiente-
-      if (this.energia()) return (Math.random()* (this.CORRIENTE_MINIMA * 0.9 ))
-      // Genera un numero aleatorio entre 15 a 30 -Sobrecarga-
+      this.energia = () => {return Math.random() < 0.95}
+      if (this.energia()) return 0
+      // Devuelve 0 -Insuficiente-
+      // Genera un numero aleatorio entre la carga maxima - (carga maxima*2) -Sobrecarga-
         else return ( (Math.random()*(this.CORRIENTE_MAXIMA * 2 ) ) + (this.CORRIENTE_MAXIMA * 1.1)) 
       } else {
-        // Genera un numero aleatorio entre 10 a 15 -Normal-
+        // Genera un numero aleatorio entre La Corriente minima y maxima -Normal-
         return ( (Math.random()*(this.CORRIENTE_MAXIMA - this.CORRIENTE_MINIMA) ) + this.CORRIENTE_MINIMA)
         // ((Math.random()*(max - min + 1) ) + min)
       }
@@ -142,7 +143,6 @@ class PROGRAMA {
 
   corrienteF1() {
     this.F1 = this.corrienteRandom(this.idMensaje).toFixed(1)
-    console.log(`F1: ${this.F1} `);
     
     document.getElementById(this.idCronometro).innerHTML += (`F1:${this.F1} (A) <br/>`);
     return parseFloat(this.F1)
@@ -161,8 +161,13 @@ class PROGRAMA {
   }
 
   medidorEnergia() {
-    this.trifasico = ((this.corrienteF1() + this.corrienteF2() + this.corrienteF3() ) / 3) / (this.CORRIENTE_MAXIMA * 2);
-    console.log(`suma: ${this.trifasico} `);
+    if (this.equipo == "Ventilador del Condensador") {
+      this.trifasico = ((this.corrienteF1() + this.corrienteF2() ) / 2) / (this.CORRIENTE_MAXIMA * 2);
+    } else {
+      this.trifasico = ((this.corrienteF1() + this.corrienteF2() + this.corrienteF3() ) / 3) / (this.CORRIENTE_MAXIMA * 2);
+    }
+    
+    // console.log(`suma: ${this.trifasico} `);
     // console.log(`trifasico: ${this.trifasico} `);
     
     return this.trifasico; 
@@ -193,7 +198,7 @@ class PROGRAMA {
     // cronometro para contar el tiempo de trabajo de la máquina
     this.contadorTiempo = 0
     this.temporisador = setInterval(() => {
-      this.segHoras = (this.contadorTiempo/360).toFixed(2)
+      this.segHoras = (this.contadorTiempo/3600).toFixed(2)
       // document.getElementById(id).innerHTML += (`<br/>${this.segHoras}h`);
       document.getElementById(id).innerHTML = (`${this.segHoras}h <br/>`);
       // console.log(`Tiempo: ${this.contadorTiempo}`)
@@ -220,26 +225,21 @@ class PROGRAMA {
 
   mensajesAlerta(equipo, id) {
     // mostrar que parte fallo
-    console.log(`falla en ${equipo} dar mantenimiento`)
+    console.log(`falla en ${equipo}`)
+    falla.play()
     
     // Dependiendo la falla realiza una accion diferente
     if (this.informacion.e < 0.05) {
-      falla.play()
       document.getElementById(id).innerHTML = `Falla de energia`
       // Falta de energia Comprobar interruptores y reiniciar equipos
-      // console.log("Falta de energia Comprobar interruptores y reiniciar equipos");
       setTimeout(this.iniciar, MINUTO * 1)
     } else if (this.informacion.e > 0.59) {
-      falla.play()
       document.getElementById(id).innerHTML = `Sobrecarga`
-      // console.log("sobrecarga de energia");
       // solo reiniciar si ya se dio mantenimiento
-      // setTimeout(this.iniciar, SEGUNDO * 10)
     } else {
       if (this.informacion.t > 0.5) {
         document.getElementById(id).innerHTML = `IA: Autoproteccion`
-        // console.log("Tiempo limite");
-        // mensaje de exceso de trabajo
+        // mensaje Autoproteccion
         setTimeout(this.iniciar, MINUTO * this.Tiempo_Descanso)
       }
     }
