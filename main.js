@@ -13,6 +13,11 @@ let tiempoVentilador = 0
 // -- AUDIO -- //
 const falla = new Audio ('../audio/falla.mp3')
 const alerta = new Audio ('../audio/alerta.mp3')
+const autoProteccion = new Audio ('../audio/autoproteccion.mp3')
+const sistemaClimatizacion = new Audio ('../audio/sistema_climatizacion.mp3')
+const bienvenida = new Audio ('./audio/bienvenida.mp3')
+bienvenida.play()
+
 
 
 
@@ -203,7 +208,7 @@ class PROGRAMA {
       document.getElementById(id).innerHTML = (`${this.segHoras}h <br/>`);
       // console.log(`Tiempo: ${this.contadorTiempo}`)
       this.contadorTiempo++
-    }, SEGUNDO / 1)
+    }, SEGUNDO / 100)
   }
 
   // extraerTiempo (id) {
@@ -220,26 +225,34 @@ class PROGRAMA {
   relacionTiempos() { 
     // Da en porcentaje la diferencia de tiempo de trabajo del condensador con el ventilador evaporador
     this.relacion = ((tiempoCompresor * 100) / tiempoVentilador).toFixed(1)
-      document.getElementById("relacion").innerHTML = (`<br/>TVent:${(tiempoVentilador/360).toFixed(1)}h TCom:${(tiempoCompresor/360).toFixed(1)}h <br/> Relacion:${this.relacion}%`);
+      document.getElementById("relacion").innerHTML = (`<br/>TVent:${(tiempoVentilador/3600).toFixed(1)}h TCom:${(tiempoCompresor/3600).toFixed(1)}h  Relacion:${this.relacion}% <br/> `);
+    if (this.relacion > 60) {
+      //Revisar el sistema de climatisacion
+      sistemaClimatizacion.play()
+      document.getElementById("relacion").innerHTML += (`<br/><b>Revisar el Sistema de Climatisacion<b/>`)
+    }
+
   }
 
   mensajesAlerta(equipo, id) {
     // mostrar que parte fallo
     console.log(`falla en ${equipo}`)
-    falla.play()
     
     // Dependiendo la falla realiza una accion diferente
-    if (this.informacion.e < 0.05) {
+    if (this.informacion.e == 0) {
+      falla.play()
       document.getElementById(id).innerHTML = `Falla de energia`
       // Falta de energia Comprobar interruptores y reiniciar equipos
-      setTimeout(this.iniciar, MINUTO * 1)
+      setTimeout(this.iniciar, MINUTO * 5)
     } else if (this.informacion.e > 0.59) {
+      falla.play()
       document.getElementById(id).innerHTML = `Sobrecarga`
       // solo reiniciar si ya se dio mantenimiento
     } else {
       if (this.informacion.t > 0.5) {
         document.getElementById(id).innerHTML = `IA: Autoproteccion`
         // mensaje Autoproteccion
+        autoProteccion.play()
         setTimeout(this.iniciar, MINUTO * this.Tiempo_Descanso)
       }
     }
@@ -264,7 +277,7 @@ class PROGRAMA {
 
   dataequipos() {
     // Muestra las informacion que recibe la IA y la desicion que toma
-    document.getElementById(this.data).innerHTML = (`Tiempo: ${this.informacion.t} <br> Electricidad: ${this.informacion.e} <br> ON: ${this.decision.on.toFixed(3)} / OFF: ${this.decision.off.toFixed(3)}`)
+    document.getElementById(this.data).innerHTML = (`ON: ${this.decision.on.toFixed(3)} / OFF: ${this.decision.off.toFixed(3)}`)
   }
 
 
@@ -305,9 +318,6 @@ class PROGRAMA {
           this.pararIntervalo(this.submonitoreo)
           
           // Dependiendo de la relacion del tiempo del condensador con el del ventilador del evaporador manda mensaje de dar mantenimiento
-          if (this.relacion > 60) {
-            // mensaje de mantenimiento
-          }
           // apaga la luz para prevenir daños
           // this.energia = false
           // verifica si hay luz, manda a descanzar
@@ -324,7 +334,7 @@ class PROGRAMA {
         // console.log(tiempoCompresor + " " + tiempoVentilador);
         // console.log(this.tiempototal + " " + this.contadorTiempo);
 
-    }, SEGUNDO / 1)
+    }, SEGUNDO / 100)
     // --- ML ---
   }
 
@@ -337,10 +347,6 @@ function empezarPrograma(id1, id2, Tiempo_Maximo, equipo, idata, idImg, srcAudio
   window.programa = new PROGRAMA(id1, id2, Tiempo_Maximo, equipo, idata, idImg, srcAudio, CORRIENTE_MAXIMA, CORRIENTE_MINIMA, Tiempo_Descanso)
 }
 
-function bienvenida () {
-  const audio = new Audio ('./audio/bienvenida.mp3')
-  audio.play()
-} bienvenida()
 
 // function iluminar() {
 //   if (imagenEquipo.classlist.contains("light")) {

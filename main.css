@@ -214,7 +214,7 @@ main .equipo img {
 }
 
 main .equipo .mensaje {
-  color: hsla(0, 100%, 70%, 1);
+  color: hsla(0, 100%, 50%, 1);
 }
 .datos {
   /* transition: var(--transition-speed); */
