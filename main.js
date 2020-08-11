@@ -208,7 +208,7 @@ class PROGRAMA {
       document.getElementById(id).innerHTML = (`${this.segHoras}h <br/>`);
       // console.log(`Tiempo: ${this.contadorTiempo}`)
       this.contadorTiempo++
-    }, SEGUNDO / 100)
+    }, SEGUNDO / 1)
   }
 
   // extraerTiempo (id) {
@@ -334,7 +334,7 @@ class PROGRAMA {
         // console.log(tiempoCompresor + " " + tiempoVentilador);
         // console.log(this.tiempototal + " " + this.contadorTiempo);
 
-    }, SEGUNDO / 100)
+    }, SEGUNDO / 1)
     // --- ML ---
   }
 
