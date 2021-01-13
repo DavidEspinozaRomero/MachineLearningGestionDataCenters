@@ -130,7 +130,7 @@ class PROGRAMA {
     //probabilidad de que la corriente no sea la adecuada
     this.probabilidad = () => {return Math.random() > 0.9999 }
     if (this.probabilidad()) {
-      console.log(`falla en ${this.equipo}`) // mensaje de error en el quipo
+      console.log(`falla de energia en ${this.equipo}`) // mensaje de error en el quipo
       alerta.play() // Audio de Alerta revizar el equipo
       // Corriente puede dar una Sobrecarga / Insuficiencia
       this.energia = () => {return Math.random() < 0.95}
@@ -208,7 +208,7 @@ class PROGRAMA {
       document.getElementById(id).innerHTML = (`${this.segHoras}h <br/>`);
       // console.log(`Tiempo: ${this.contadorTiempo}`)
       this.contadorTiempo++
-    }, SEGUNDO / 1)
+    }, SEGUNDO / 10)
   }
 
   // extraerTiempo (id) {
@@ -295,11 +295,11 @@ class PROGRAMA {
         e: this.medidorEnergia().toFixed(3),
         t: this.tiempoCorrecto(id).toFixed(3),
       }
-      // console.log(this.informacion);
 
         // Se entrega la informacion a la IA para que decida
         this.decision = network.run(this.informacion)
-        // console.log(this.decision);
+        
+        console.log(`e:${this.informacion.e}, t:${this.informacion.t}<br/> on:${this.decision.on}, of:${this.decision.off}`);
         this.dataequipos()
 
         // if on > off serguir trabajando // else apagar
@@ -334,7 +334,7 @@ class PROGRAMA {
         // console.log(tiempoCompresor + " " + tiempoVentilador);
         // console.log(this.tiempototal + " " + this.contadorTiempo);
 
-    }, SEGUNDO / 1)
+    }, SEGUNDO / 10)
     // --- ML ---
   }
 
